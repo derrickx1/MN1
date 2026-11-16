@@ -191,6 +191,8 @@ dl.kv dd{margin:0;white-space:pre-wrap}
 .ib-l,.ib-v{font-size:.82rem;font-weight:700;padding:0 6px;white-space:nowrap}
 .ib-v{min-width:46px;text-align:right}
 .rxbox{background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+.draft{margin-bottom:12px}
+.draft textarea{width:100%;border:1px solid var(--line);background:var(--sunk);border-radius:10px;padding:10px 12px;font-size:.98rem;resize:vertical;color:var(--ink);line-height:1.45}
 .rx-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 .rxbox>p{margin:0 0 10px;white-space:pre-wrap;font-size:.94rem}
 .lockbar{background:var(--sunk);border-radius:10px;padding:8px 12px;font-size:.88rem;color:var(--muted);margin-bottom:8px}
@@ -482,7 +484,7 @@ star:'<path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2L12 17.4 6.5 20.3l1-6.2L3 9.7l6.
 trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
 left:'<path d="M15 5l-7 7 7 7"/>',right:'<path d="M9 5l7 7-7 7"/>',
 edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',
-check:'<path d="M5 12l5 5 9-10"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',unlock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',dots:'<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>'
+check:'<path d="M5 12l5 5 9-10"/>',list:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',unlock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',dots:'<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>'
 };
 const ic=(n,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
 
@@ -698,7 +700,7 @@ function vitChips(v){
   return c.length?`<div class="vit">${c.map(x=>`<span>${x}</span>`).join('')}</div>`:'';
 }
 function evoCard(p,e){
-  return `<article class="evo"><header><div><b>${esc(evoName(p,e))}</b><span class="muted small">${cap(fmtDate(e.date))}${e.time?`, ${e.time}`:''}</span></div><div class="acts"><button class="icon-btn sm" data-a="evo-update" data-pid="${p.id}" data-id="${e.id}" aria-label="Actualizar con otra foto" title="Actualizar con foto">${ic('cam',18)}</button><button class="icon-btn sm" data-a="evo-copy" data-pid="${p.id}" data-id="${e.id}" aria-label="Duplicar como nueva evolución">${ic('copy',18)}</button><button class="icon-btn sm" data-a="edit-evo" data-pid="${p.id}" data-id="${e.id}" aria-label="Editar evolución">${ic('edit',18)}</button><button class="icon-btn sm" data-a="del-evo" data-pid="${p.id}" data-id="${e.id}" aria-label="Eliminar evolución">${ic('trash',18)}</button></div></header>${vitChips(e.vitals)}<div class="soap">${EVO_TEXT.filter(([k])=>has(e[k])).map(([k,l])=>`<h4>${l}</h4><p>${k==='exam'?examHTML(e):nl(e[k])}</p>`).join('')}</div></article>`;
+  return `<article class="evo"><header><div><b>${esc(evoName(p,e))}</b><span class="muted small">${cap(fmtDate(e.date))}${e.time?`, ${e.time}`:''}</span></div><div class="acts"><button class="icon-btn sm" data-a="draft-open" data-mode="evo-update" data-pid="${p.id}" data-eid="${e.id}" aria-label="Actualizar con un borrador" title="Actualizar con borrador">${ic('list',18)}</button><button class="icon-btn sm" data-a="evo-update" data-pid="${p.id}" data-id="${e.id}" aria-label="Actualizar con otra foto" title="Actualizar con foto">${ic('cam',18)}</button><button class="icon-btn sm" data-a="evo-copy" data-pid="${p.id}" data-id="${e.id}" aria-label="Duplicar como nueva evolución">${ic('copy',18)}</button><button class="icon-btn sm" data-a="edit-evo" data-pid="${p.id}" data-id="${e.id}" aria-label="Editar evolución">${ic('edit',18)}</button><button class="icon-btn sm" data-a="del-evo" data-pid="${p.id}" data-id="${e.id}" aria-label="Eliminar evolución">${ic('trash',18)}</button></div></header>${vitChips(e.vitals)}<div class="soap">${EVO_TEXT.filter(([k])=>has(e[k])).map(([k,l])=>`<h4>${l}</h4><p>${k==='exam'?examHTML(e):nl(e[k])}</p>`).join('')}</div></article>`;
 }
 const labOn=(p,name,date)=>(p.labs||[]).filter(l=>l.name===name&&l.date===date).sort((a,b)=>(b.time||'').localeCompare(a.time||''))[0];
 const fmtNum=x=>(Math.round(x*100)/100).toLocaleString('es');
@@ -735,7 +737,7 @@ function spark(vals){
 }
 function labsBody(p){
   const labs=p.labs||[];
-  let o=`<div class="row-btns"><button class="btn small primary" data-a="new-lab" data-pid="${p.id}">${ic('plus',16)} Añadir uno</button><button class="btn small" data-a="lab-tpl" data-pid="${p.id}">Formato completo</button><button class="btn small" data-a="lab-scan" data-pid="${p.id}">📷 Escanear informe</button><input type="file" accept="image/*" id="labScanFile" data-pid="${p.id}" hidden></div>`;
+  let o=`<div class="row-btns"><button class="btn small primary" data-a="new-lab" data-pid="${p.id}">${ic('plus',16)} Añadir uno</button><button class="btn small" data-a="lab-tpl" data-pid="${p.id}">Formato completo</button><button class="btn small" data-a="lab-scan" data-pid="${p.id}">📷 Escanear informe</button><button class="btn small" data-a="draft-open" data-mode="lab" data-pid="${p.id}">📋 Borrador</button><input type="file" accept="image/*" id="labScanFile" data-pid="${p.id}" hidden></div>`;
   if(!labs.length)return o+'<p class="muted">Sin resultados registrados.</p>';
   const ds=uniq(labs.map(l=>l.date)).sort().slice(-5);
   let body='';
@@ -855,7 +857,7 @@ function vPaciente(p){
   const evos=[...(p.evolutions||[])].sort(byEvo);
   const sel=ui.cmp[p.id]||evos.slice(-2).map(e=>e.id);ui.cmp[p.id]=sel;
   const idBody=`<dl class="kv"><dt>Cédula</dt><dd>${esc(p.code)}</dd><dt>Nombres y apellidos</dt><dd>${esc(p.name)||'—'}</dd><dt>Cama</dt><dd>${esc(p.bed)||'—'}</dd><dt>Servicio</dt><dd>${esc(p.service)}</dd><dt>Ingreso</dt><dd>${p.admitDate?cap(fmtDate(p.admitDate)):'—'}</dd><dt>Estado</dt><dd>${p.status==='alta'?'Alta':'Hospitalizado'}</dd><dt>Diagnóstico</dt><dd>${p.dxList&&p.dxList.length?p.dxList.map(x=>`${x.cie?`<b>${esc(x.cie)}</b> `:''}${esc(x.text)}`).join('<br>'):esc(p.dx)||'—'}</dd><dt>Antecedentes</dt><dd>${esc(p.history)||'—'}</dd><dt>Alergias</dt><dd>${esc(p.allergies)||'—'}</dd><dt>Información clínica</dt><dd>${esc(p.info)||'—'}</dd></dl><div class="row-btns"><button class="btn small" data-a="edit-patient" data-id="${p.id}">Editar datos</button><button class="btn small" data-a="export-patient" data-id="${p.id}">Exportar ficha</button><button class="btn small" data-a="del-patient" data-id="${p.id}">Eliminar</button></div>`;
-  const evoBody=`<div class="row-btns"><button class="btn small primary" data-a="new-evo" data-pid="${p.id}">${ic('plus',16)} Nueva evolución</button><button class="btn small" data-a="evo-photo" data-pid="${p.id}">📷 Desde foto</button><input type="file" accept="image/*" id="evoScanFile" hidden>${evos.length>1?`<button class="btn small" data-a="evo-mode">${ui.evoList?'Ver un día a la vez':'Ver todas en lista'}</button>`:''}</div><p class="muted small" style="margin:0">El día de ingreso cuenta como día 1.</p>${evos.length?(ui.evoList?[...evos].reverse().map(e=>evoCard(p,e)).join(''):evoPager(p,evos)):'<p class="muted">Sin evoluciones todavía.</p>'}`;
+  const evoBody=`<div class="row-btns"><button class="btn small primary" data-a="new-evo" data-pid="${p.id}">${ic('plus',16)} Nueva evolución</button><button class="btn small" data-a="evo-photo" data-pid="${p.id}">📷 Desde foto</button><button class="btn small" data-a="draft-open" data-mode="evo" data-pid="${p.id}">📋 Borrador</button><input type="file" accept="image/*" id="evoScanFile" hidden>${evos.length>1?`<button class="btn small" data-a="evo-mode">${ui.evoList?'Ver un día a la vez':'Ver todas en lista'}</button>`:''}</div><p class="muted small" style="margin:0">El día de ingreso cuenta como día 1.</p>${evos.length?(ui.evoList?[...evos].reverse().map(e=>evoCard(p,e)).join(''):evoPager(p,evos)):'<p class="muted">Sin evoluciones todavía.</p>'}`;
   const cmpBody=evos.length<2?'<p class="muted">Registra al menos dos evoluciones para comparar días.</p>':`<div class="pick">${evos.map(e=>`<label><input type="checkbox" data-cmp="${p.id}" value="${e.id}" ${sel.includes(e.id)?'checked':''}> ${esc(evoName(p,e))} <span class="muted small">${fmtShort(e.date)}</span></label>`).join('')}</div><div id="cmp-${p.id}">${compareTable(p,sel)}</div>`;
   const meds=p.meds||[];
   const medBody=`${rxBox(p)}<div class="row-btns"><button class="btn small primary" data-a="new-med" data-pid="${p.id}">${ic('plus',16)} Añadir medicamento</button></div>${meds.length?meds.map(m=>`<div class="li ${m.active?'':'off'}"><div class="grow"><div class="t">${esc(m.name)}${m.active?'':' (suspendido)'}</div><div class="s">${[m.dose,m.route,m.freq].filter(has).map(esc).join(', ')}${m.start?`. Desde ${fmtShort(m.start)}`:''}${m.note?`\n${esc(m.note)}`:''}</div></div><button class="btn small" data-a="toggle-med" data-pid="${p.id}" data-id="${m.id}">${m.active?'Suspender':'Reanudar'}</button><button class="icon-btn sm" data-a="del-med" data-pid="${p.id}" data-id="${m.id}" aria-label="Eliminar medicamento">${ic('trash',18)}</button></div>`).join(''):'<p class="muted">Sin medicamentos registrados.</p>'}`;
@@ -975,6 +977,163 @@ function rxPreview(p,e){
   rxRows=items;rxDate=e.date;
   openSheet(`${sheetHead('Pasar a medicamentos')}<p class="muted small" style="margin:0 0 10px">Marca lo que quieras añadir a la lista de medicamentos. Las indicaciones generales (dieta, controles, exámenes) vienen desmarcadas. Después puedes suspender o eliminar cada uno.</p><form data-submit="rxmeds" data-pid="${p.id}"><div class="ltpl">${items.map((x,i)=>{const dup=act.has(norm(x.name));return `<label class="lrow"><input type="checkbox" name="ok${i}" ${x.isMed&&!dup?'checked':''}><span>${esc(x.name)}<small>${[x.dose,x.route,x.freq].filter(Boolean).map(esc).join(', ')||'Indicación'}${dup?', ya está en la lista':''}</small></span></label>`}).join('')}</div><div class="sticky-actions"><button type="button" class="btn" data-a="close-sheet">Cancelar</button><button class="btn primary">Añadir a la lista</button></div></form>`);
 }
+/* ---------- borrador ---------- */
+let draftLabs=null,draftDx=null;
+function draftUI(mode,pid='',eid=''){
+  const tip={patient:'Pega todo lo que tengas: datos del paciente, diagnósticos, la evolución y laboratorios.',evo:'Pega la nota del día: signos vitales, examen físico, diagnósticos, prescripciones y laboratorios.','evo-update':'Pega lo nuevo de esta evolución. Solo cambia lo que el borrador trae distinto.',lab:'Pega los resultados de laboratorio, uno por línea o separados por comas.'}[mode]||'';
+  return `<div class="draft"><p class="muted small" style="margin:0 0 6px">${tip}</p><textarea id="draftText" rows="9" aria-label="Texto del borrador" placeholder="Ejemplo: en la galería abre la foto, toca Lens, luego Texto, selecciona todo, copia y pega aquí."></textarea><input type="file" accept=".txt,text/plain" id="draftFile" hidden><div class="row-btns"><button type="button" class="btn small" data-a="draft-file">Subir archivo de texto</button><button type="button" class="btn small primary" data-a="draft-go" data-mode="${mode}" data-pid="${pid}" data-eid="${eid}">Reconocer y rellenar</button></div></div>`;
+}
+function draftPrompt(mode){
+  const canon=uniq([...Object.values(LAB_TPL).flatMap(t=>t.items.map(i=>i[0])),...LAB_NAMES]);
+  return `El texto de abajo lo pegó un médico interno. Puede venir de una foto pasada por un lector de texto (con errores de lectura, columnas mezcladas o saltos de línea raros) o estar escrito rápido a mano. Reparte su contenido en los campos de la aplicación.
+Usa solo lo que está en el texto; si algo no aparece, usa null o una lista vacía. No inventes ni deduzcas valores. Corrige solo errores evidentes del lector de texto y marca con [?] lo dudoso. Las fechas como 14/11/2026 son día/mes/año.
+${mode==='lab'?'Interesan sobre todo los resultados de laboratorio. En informes pasados por un lector de texto, los nombres, valores, unidades y rangos pueden aparecer en bloques separados: emparéjalos por orden con cuidado y pon "dudoso": true cuando no estés seguro.':''}
+Responde solo con un objeto JSON con esta forma:
+{"paciente":{"cedula":null,"nombres":null,"cama":null,"servicio":null,"fecha_ingreso":"AAAA-MM-DD o null","antecedentes":null,"alergias":null,"otros_datos":"edad, sexo u otra identificación, o null"},
+"diagnosticos":[{"texto":"","cie10":"código o null"}],
+"evolucion":{"fecha":"AAAA-MM-DD o null","hora":"HH:MM o null","nota":"la evolución narrativa sin examen físico, signos vitales, laboratorios, diagnósticos ni prescripciones, o null","examen":{"general":null,"cabeza":null,"cuello":null,"torax":null,"abdomen":null,"extremidades":null,"neurologico":null,"otros":"hallazgos que no encajan en esas regiones, o null"},"signos":{"tas":null,"tad":null,"fc":null,"fr":null,"temp":null,"sat":null,"eva":null,"gluc":null},"plan":null,"prescripciones":"lista numerada tal como aparece, o null"},
+"laboratorios":{"fecha":"AAAA-MM-DD o null","hora":"HH:MM o null","resultados":[{"grupo":"uno de ${PANELS.join(' | ')}","parametro":"","valor":"","unidad":"","referencia":"","dudoso":false}]}}
+Para "parametro" usa, cuando corresponda, exactamente uno de estos nombres: ${canon.join(' | ')}. En signos pon solo números.`;
+}
+const VIT_RE={
+  ta:/\b(?:T\.?\s?\/?A|P\.?\s?\/?A|tensi[oó]n arterial|presi[oó]n arterial)\s*[:=]?\s*(\d{2,3})\s*\/\s*(\d{2,3})/i,
+  fc:/\b(?:F\.?C\.?|frecuencia card[ií]aca|pulso)\s*[:=]?\s*(\d{2,3})\b/i,
+  fr:/\b(?:F\.?R\.?|frecuencia respiratoria)\s*[:=]?\s*(\d{1,2})\b/i,
+  temp:/\b(?:temp(?:eratura)?|T°|T\s*ax(?:ilar)?|T)\s*[:=]?\s*(3\d(?:[.,]\d)?|4[0-2](?:[.,]\d)?)\s*(?:°|ºC|°C|C\b)?/i,
+  sat:/\b(?:Sat\.?\s*O2|SatO2|SpO2|Sat(?:uraci[oó]n)?(?:\s*de\s*O2)?)\s*[:=]?\s*(\d{2,3})\s*%?/i,
+  eva:/\bEVA\s*[:=]?\s*(\d{1,2})(?:\s*\/\s*10)?/i,
+  gluc:/\b(?:glucemia|glicemia|HGT|glucosa capilar|dextrostix|Glu)\s*[:=]?\s*(\d{2,3})\b/i
+};
+const vitalHits=l=>Object.values(VIT_RE).filter(re=>re.test(l)).length;
+const LAB_SYN={'leucocitos':'Glóbulos blancos','globulos blancos':'Glóbulos blancos','gb':'Glóbulos blancos','wbc':'Glóbulos blancos','leu':'Glóbulos blancos','hb':'Hemoglobina','hgb':'Hemoglobina','hto':'Hematocrito','hct':'Hematocrito','plaq':'Plaquetas','plt':'Plaquetas','neu':'Neutrófilos','seg':'Neutrófilos','segmentados':'Neutrófilos','linf':'Linfocitos','mono':'Monocitos','eos':'Eosinófilos','baso':'Basófilos','gr':'Glóbulos rojos','hematies':'Glóbulos rojos','rbc':'Glóbulos rojos','recuento de globulos rojos':'Glóbulos rojos','mcv':'VCM','vol corpuscular medio':'VCM','mch':'HCM','hgb corpuscular media':'HCM','mchc':'CHCM','conc hgb corpuscular media':'CHCM','rdw':'RDW-CV','vpm':'Volumen plaquetario medio','mpv':'Volumen plaquetario medio','volumen plaquetario':'Volumen plaquetario medio','na':'Sodio','na+':'Sodio','sodio (na)':'Sodio','k':'Potasio','k+':'Potasio','potasio serico':'Potasio','cl':'Cloro','cl-':'Cloro','cloro serico':'Cloro','ca ionico':'Calcio iónico','ca++':'Calcio iónico','ph suero/plasma':'pH','tgo':'TGO (AST)','ast':'TGO (AST)','tgp':'TGP (ALT)','alt':'TGP (ALT)','bt':'Bilirrubina total','bd':'Bilirrubina directa','fa':'Fosfatasa alcalina','glicemia':'Glucosa','cr':'Creatinina','crea':'Creatinina','pct':'Procalcitonina','bhcg':'β-hCG cuantitativa en sangre','b-hcg':'β-hCG cuantitativa en sangre','beta hcg':'β-hCG cuantitativa en sangre','β-hcg':'β-hCG cuantitativa en sangre'};
+function labCanon(n){
+  const k=norm(n).replace(/[.:]/g,'').replace(/\s+/g,' ').trim();if(!k)return null;
+  if(LAB_SYN[k])return LAB_SYN[k];
+  const all=uniq([...Object.values(LAB_TPL).flatMap(t=>t.items.map(i=>i[0])),...LAB_NAMES]);
+  return all.find(x=>norm(x)===k)||null;
+}
+const labPanelOf=n=>{for(const t of Object.values(LAB_TPL))if(t.items.some(i=>i[0]===n))return t.panel;return /^(PCR|Procalcitonina)$/.test(n)?'Otros':PANELS.includes('Química sanguínea')&&/Glucosa|Urea|BUN|Creatinina/.test(n)?'Química sanguínea':'Otros'};
+const labUnitOf=n=>{for(const t of Object.values(LAB_TPL)){const i=t.items.find(x=>x[0]===n);if(i)return i[1]}return ''};
+function ruleLabs(T,labLines){
+  const out=[];const seen=new Set();const inLab=new Set(labLines||[]);
+  const CH=/^([A-Za-zÁÉÍÓÚáéíóúÑñβ][A-Za-zÁÉÍÓÚáéíóúÑñβ()+\-\/ ]{0,38}?)\s*[:=]?\s*(-?\d+(?:[.,]\d+)?)\s*(%|[a-zA-Zµ]+(?:\^?\d+)?(?:\/[a-zA-Zµ0-9]+)?)?(?:\s*\(?\s*(?:ref\.?|VR|rango)?\s*:?\s*(\d+(?:[.,]\d+)?\s*[-–]\s*\d+(?:[.,]\d+)?)\s*\)?)?/;
+  T.split('\n').forEach(line=>{
+    const isLab=inLab.has(line.trim());
+    line.split(/\s*[,;]\s*|\s{3,}/).forEach(ch=>{
+      const m=ch.replace(/^\s*[•\-–*]+\s*/,'').replace(/^(laboratorios?|ex[aá]menes(?:\s+de\s+laboratorio)?|resultados|labs?)\s*:\s*/i,'').trim().match(CH);if(!m)return;
+      let name=m[1].trim(),unit=(m[3]||'').trim();
+      let canon=(unit==='%'&&labCanon(name+' %'))||labCanon(name);
+      if(!canon&&!isLab)return;
+      if(vitalHits(ch)&&!canon)return;
+      canon=canon||cap(name);
+      if(seen.has(canon))return;seen.add(canon);
+      out.push({grupo:labPanelOf(canon),parametro:canon,valor:m[2],unidad:unit&&!/^(y|de|en|con)$/i.test(unit)?unit:labUnitOf(canon),referencia:m[4]||'',dudoso:!labCanon(name)});
+    });
+  });
+  return out;
+}
+function ruleParse(text){
+  const T=String(text||'').replace(/\r/g,'');
+  const U={paciente:{},diagnosticos:[],evolucion:{examen:{},signos:{}},laboratorios:{resultados:[]}};
+  const P=U.paciente,E=U.evolucion;
+  const m1=re=>{const m=T.match(re);return m?m[1].trim():null};
+  P.cedula=m1(/\b(?:c[eé]dula|C\.?\s?I\.?)\s*(?:de identidad)?\s*[:#.]?\s*(\d{10})\b/i);
+  P.nombres=m1(/\b(?:nombres?(?:\s+y\s+apellidos)?|paciente)\s*:\s*([A-ZÁÉÍÓÚÑ][A-Za-zÁÉÍÓÚÑáéíóúñ ]{4,60}?)(?=\s*(?:\n|$|c[eé]dula|edad|sexo|,))/i);
+  P.cama=m1(/\bcama\s*(?:n[°ºo.]*)?\s*[:#]?\s*(\d{1,3}[A-Za-z]?)\b/i);
+  P.servicio=m1(/\bservicio\s*:\s*([^\n,;]{3,40})/i);
+  P.alergias=m1(/\balergi(?:as?|co[sa]?)\s*:\s*([^\n]+)/i);
+  P.antecedentes=m1(/\bantecedentes(?:\s+patol[oó]gicos)?(?:\s+personales)?\s*:\s*([^\n]+)/i);
+  const ed=T.match(/(\d{1,3})\s*años/i),sx=T.match(/\b(femenin[oa]|masculin[oa])\b/i);
+  P.otros_datos=[ed?ed[1]+' años':'',sx?sx[1].toLowerCase():''].filter(Boolean).join(', ')||null;
+  const iso=(d,mo,y)=>{y=String(y).length===2?'20'+y:y;const s=`${y}-${pad(+mo)}-${pad(+d)}`;return isDate(s)&&+mo>=1&&+mo<=12&&+d>=1&&+d<=31?s:null};
+  const ing=T.match(/(?:fecha\s+de\s+ingreso|ingreso)\s*:?\s*(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/i);
+  if(ing)P.fecha_ingreso=iso(ing[1],ing[2],ing[3]);
+  const ds=[...T.matchAll(/\b(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})\b/g)].map(m=>iso(m[1],m[2],m[3])).filter(Boolean);
+  E.fecha=ds.find(x=>x!==P.fecha_ingreso)||ds[0]||null;
+  const hm=T.match(/\b(\d{1,2})\s*[:h]\s*(\d{2})\s*(am|pm|a\.\s?m\.|p\.\s?m\.)?/i);
+  if(hm){let h=+hm[1];if(hm[3]&&/p/i.test(hm[3])&&h<12)h+=12;if(hm[3]&&/a/i.test(hm[3])&&h===12)h=0;if(h<24&&+hm[2]<60)E.hora=`${pad(h)}:${hm[2]}`}
+  const S2=E.signos;let v;
+  if((v=T.match(VIT_RE.ta))){S2.tas=v[1];S2.tad=v[2]}
+  ['fc','fr','temp','sat','eva','gluc'].forEach(k=>{const m=T.match(VIT_RE[k]);if(m)S2[k]=m[1].replace(',','.')});
+  const HDR=[[/^(examen\s+f[ií]sico|ex\.?\s*f[ií]sico|e\.\s?f\.)\s*[:.]?/i,'exam'],[/^(dx|idx|diagn[oó]sticos?|impresi[oó]n\s+diagn[oó]stica)\s*[:.]?/i,'dx'],[/^(indicaciones|prescripciones|prescripci[oó]n|tratamiento|tto|rp\.?|rx)\s*[:.]?/i,'rx'],[/^plan\s*[:.]?/i,'plan'],[/^(laboratorios?|ex[aá]menes(\s+de\s+laboratorio)?|resultados|labs?)\s*[:.]?/i,'lab'],[/^(signos\s+vitales|s\.?\s?v\.?)\s*[:.]/i,'sv'],[/^(antecedentes|alergias?|c[eé]dula|nombres?|servicio|cama|fecha)\b[^:]*:/i,'skip']];
+  const REG=[[/^(cabeza|cr[aá]neo|ojos|cara|orofaringe)\b/i,'cabeza'],[/^cuello\b/i,'cuello'],[/^(t[oó]rax|pulmones|pulmonar|cardiopulmonar|coraz[oó]n|cardio\w*|c\/p)\b/i,'torax'],[/^abdomen\b/i,'abdomen'],[/^(extremidades|miembros|ee\.?\s?ii\.?|ee\.?\s?ss\.?|mm\.?\s?ii\.?|mm\.?\s?ss\.?)\b/i,'extremidades'],[/^(neuro\w*|sistema nervioso|snc)\b/i,'neurologico'],[/^(piel|estado general|aspecto general|general)\b/i,'general'],[/^(genitales|ginecol[oó]gico|g\/o|obst[eé]trico|tacto vaginal|especuloscop\w*|altura uterina|fcf|regi[oó]n lumbar|columna)\b/i,'otros']];
+  let sec='nota',reg=null;const nota=[],dxL=[],rxL=[],planL=[],labL=[];
+  for(const raw of T.split('\n')){
+    let line=raw.replace(/^\s*[•\-–*·]+\s*/,'').trim();if(!line)continue;
+    let skipLine=false;
+    for(const[re,s] of HDR){const m=line.match(re);if(m){if(s==='skip'){skipLine=true;break}sec=s;reg=null;line=line.slice(m[0].length).replace(/^[\s:.\-]+/,'');break}}
+    if(skipLine)continue;
+    const rg=REG.find(([re])=>re.test(line));
+    if(rg&&(sec==='exam'||/^[^:]{0,30}:/.test(line))&&['exam','nota','sv'].includes(sec)){sec='exam';reg=rg[1];line=line.replace(rg[0],'').replace(/^[\s:.\-]+/,'')}
+    if(!line)continue;
+    if(sec==='exam'){const k=reg||'general';E.examen[k]=(E.examen[k]?E.examen[k]+' ':'')+line;continue}
+    if(sec==='dx'){dxL.push(line);continue}
+    if(sec==='rx'){rxL.push(raw.trim());continue}
+    if(sec==='plan'){planL.push(line);continue}
+    if(sec==='lab'){labL.push(raw.trim());continue}
+    if(sec==='sv'){if(vitalHits(line))continue;sec='nota'}
+    if(vitalHits(line)>=2)continue;
+    if(/^\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}(\s+\d{1,2}\s*[:h]\s*\d{2}\s*(am|pm|a\.\s?m\.|p\.\s?m\.)?)?$/i.test(line))continue;
+    nota.push(line);
+  }
+  dxL.join('\n').split(/\n|;|\s(?=\d+[.)]\s)/).map(s=>s.replace(/^\s*\d+[.)]\s*/,'').trim()).filter(Boolean).forEach(s=>{const c=s.match(/\b([A-Z]\d{2}(?:\.\d{1,3})?)\b/);const t=s.replace(c?c[0]:'','').replace(/\(\s*\)|CIE-?10\s*:?/gi,'').replace(/[\s,;:.\-]+$/,'').trim();if(t||c)U.diagnosticos.push({texto:t,cie10:c?c[1]:null})});
+  E.nota=nota.join('\n')||null;E.prescripciones=rxL.join('\n')||null;E.plan=planL.join('\n')||null;
+  U.laboratorios={fecha:E.fecha,hora:E.hora,resultados:ruleLabs(T,labL)};
+  return U;
+}
+function applyExtras(e,ev,marks,cur){
+  ev=ev||{};const ok=x=>has(x)&&String(x).toLowerCase()!=='null';
+  const o=ev.examen&&ev.examen.otros;
+  if(ok(o)&&(!cur||String(cur.examOther||'').trim()!==String(o).trim())){e.examOther=String(o).trim();if(marks)marks.push('examOther')}
+  if(ok(ev.plan)&&(!cur||String(cur.plan||'').trim()!==String(ev.plan).trim())){e.plan=String(ev.plan).trim();if(marks)marks.push('plan')}
+  e.exam=composeExam(e.ex||{},e.examOther||'');
+}
+function draftExtrasHTML(){
+  let h='';
+  if(draftLabs)h+=`<p class="muted small" style="margin:0 0 8px">También encontré ${draftLabs.data.resultados.length} ${draftLabs.data.resultados.length===1?'resultado':'resultados'} de laboratorio: los revisarás al guardar.</p>`;
+  if(draftDx)h+=`<label class="switch" style="font-weight:400"><input type="checkbox" name="addDx" checked> Añadir a la ficha: ${esc(draftDx.list.map(x=>(x.texto||'')+(x.cie10?` (${x.cie10})`:'')).join('; '))}</label>`;
+  return h;
+}
+async function processDraft(mode,text,pid,eid){
+  text=String(text||'').trim();if(!text)return toast('Pega o escribe el borrador primero.','err');
+  draftLabs=null;draftDx=null;
+  let U=null,ai=false;const s=await getSample();
+  if(s){busyCtl=new AbortController();showBusy('Reconociendo el borrador…','El texto se envía a Claude para repartirlo en los campos.');
+    try{U=await s.json(draftPrompt(mode)+'\n\nTEXTO:\n'+text,{signal:busyCtl.signal,cache:false});ai=true}
+    catch(e){if(e&&e.code==='cancelled'){hideBusy();busyCtl=null;return}U=null}
+    finally{hideBusy();busyCtl=null}}
+  if(!U||typeof U!=='object'){U=ruleParse(text);ai=false}
+  U.paciente=U.paciente||{};U.evolucion=U.evolucion||{};U.diagnosticos=Array.isArray(U.diagnosticos)?U.diagnosticos:[];U.laboratorios=U.laboratorios||{resultados:[]};
+  const labs=(U.laboratorios.resultados||[]).filter(x=>x&&has(x.parametro)&&has(x.valor));U.laboratorios.resultados=labs;
+  const how=ai?'Repartido con Claude':'Repartido con el reconocimiento de la app';
+  if(mode==='lab'){const p=getP(pid);if(!p)return;if(!labs.length)return toast('No reconocí resultados de laboratorio en el borrador.','err');labReview(p,U.laboratorios);return}
+  if(mode==='patient'){
+    if(labs.length)draftLabs={pid:'',data:U.laboratorios};
+    const f=document.querySelector('form[data-submit="patient"]');if(!f)return;
+    fillPatientForm(f,{...U.paciente,diagnosticos:U.diagnosticos,evolucion:U.evolucion});
+    $('#ptDraft').innerHTML='';
+    $('#ptScanInfo').insertAdjacentHTML('afterbegin',`<p class="muted small" style="margin:0 0 6px">${how}.${labs.length?` También encontré ${labs.length} ${labs.length===1?'resultado':'resultados'} de laboratorio: los revisarás al guardar.`:''}</p>`);
+    return;
+  }
+  const p=getP(pid);if(!p)return;
+  if(labs.length)draftLabs={pid:p.id,data:U.laboratorios};
+  const dxNew=U.diagnosticos.filter(x=>x&&(has(x.texto)||has(x.cie10))&&String(x.texto||'').toLowerCase()!=='null').filter(x=>!(p.dxList||[]).some(y=>(x.cie10&&y.cie&&norm(y.cie)===norm(x.cie10))||(has(x.texto)&&norm(y.text)===norm(x.texto))));
+  if(dxNew.length)draftDx={pid:p.id,list:dxNew};
+  const ev=U.evolucion;
+  if(mode==='evo-update'){
+    const cur=(p.evolutions||[]).find(x=>x.id===eid);if(!cur)return;
+    const{e,marks}=mergeScan(cur,ev);applyExtras(e,ev,marks,cur);
+    if(!marks.length&&!labs.length&&!dxNew.length)return toast('El borrador no trae nada distinto a esta evolución.');
+    evoForm(p,e);
+    const fm=$('#sheet form');if(fm){fm.insertAdjacentHTML('beforebegin',`<p class="copied">${how}. Se actualizaron ${marks.length} ${marks.length===1?'campo':'campos'} (marcados con una línea de color); lo demás se mantiene. Si cancelas, la evolución queda como estaba.</p>`);fm.insertAdjacentHTML('afterbegin',draftExtrasHTML())}
+    marks.forEach(n=>{const el=$('#sheet').querySelector(`[name="${n}"]`);if(el){el.classList.add('filled');const dt=el.closest('details');if(dt)dt.open=true}});
+    return;
+  }
+  const e=evoFromScan(ev);delete e.id;applyExtras(e,ev);
+  evoForm(p,e,`el borrador. ${how}`);
+  const fm=$('#sheet form');if(fm)fm.insertAdjacentHTML('afterbegin',draftExtrasHTML());
+  if(e.plan){const dt=$('#sheet').querySelector('[name="plan"]');if(dt&&dt.closest('details'))dt.closest('details').open=true}
+}
 let ptScan=null;
 function fillPatientForm(f,x){
   if(!x||typeof x!=='object'){toast('No se pudo leer la hoja.','err');return}
@@ -998,9 +1157,9 @@ function evoFromScan(v){
   return {id:uid(),date:isDate(v.fecha)?v.fecha:today(),time:/^\d\d:\d\d$/.test(v.hora||'')?v.hora:'',label:'',full:ok(v.nota)?v.nota:'',rx:ok(v.prescripciones)?v.prescripciones:'',vitals:vit,ex,examOther:'',exam:composeExam(ex,'')};
 }
 function patientForm(p){
-  ptScan=null;
+  ptScan=null;draftLabs=null;
   p=p||{status:'hosp',admitDate:today()};
-  openSheet(`${sheetHead(p.id?'Editar paciente':'Registrar paciente')}<form data-submit="patient" data-id="${p.id||''}"><button type="button" class="btn wide" data-a="pt-scan" style="margin-bottom:12px">📷 Completar desde foto de una evolución</button><input type="file" accept="image/*" id="ptScanFile" hidden><div id="ptScanInfo"></div>
+  openSheet(`${sheetHead(p.id?'Editar paciente':'Registrar paciente')}<form data-submit="patient" data-id="${p.id||''}"><button type="button" class="btn wide" data-a="pt-scan" style="margin-bottom:12px">📷 Completar desde foto de una evolución</button><button type="button" class="btn wide" data-a="pt-draft" style="margin-bottom:12px">📋 Completar desde borrador</button><div id="ptDraft"></div><input type="file" accept="image/*" id="ptScanFile" hidden><div id="ptScanInfo"></div>
   ${fld('Cédula','code',p.code,'text','required inputmode="numeric" placeholder="Ej.: 1312345678" autocomplete="off"')}
   ${fld('Nombres y apellidos','name',p.name,'text','autocomplete="off"')}
   <div class="cols2">${fld('Cama (opcional)','bed',p.bed,'text','inputmode="numeric"')}${fld('Servicio','service',p.service)}</div>
@@ -1460,13 +1619,17 @@ const A={
   'open-patient':d=>{closeSheet();ui.tab='pacientes';ui.patientId=d.id;ui.search='';render();window.scrollTo(0,0)},
   'del-patient':d=>askConfirm('¿Eliminar este paciente y todo su registro?','Eliminar',()=>{S.patients=S.patients.filter(p=>p.id!==d.id);S.reminders.forEach(r=>{if(r.patientId===d.id)r.patientId=''});ui.patientId=null;save();render();toast('Paciente eliminado')}),
   'export-patient':d=>exportPatient(getP(d.id)),
-  'new-evo':d=>{const p=getP(d.pid);const last=[...(p.evolutions||[])].sort(byEvo).pop();if(!last)return evoForm(p);openSheet(`${sheetHead('Nueva evolución')}<div class="menu"><button data-a="evo-copy" data-pid="${p.id}" data-id="${last.id}">Copiar datos de ${esc(evoName(p,last))}<small>Trae la nota, el examen físico, los signos vitales y las prescripciones para que solo cambies lo nuevo.</small></button><button data-a="evo-photo" data-pid="${p.id}">📷 Leer desde una foto<small>Toma foto a la hoja de evolución y se llenan los campos que se puedan leer.</small></button><button data-a="evo-blank" data-pid="${p.id}">Nueva evolución en blanco</button></div>`)},
+  'new-evo':d=>{const p=getP(d.pid);const last=[...(p.evolutions||[])].sort(byEvo).pop();if(!last)return evoForm(p);openSheet(`${sheetHead('Nueva evolución')}<div class="menu"><button data-a="evo-copy" data-pid="${p.id}" data-id="${last.id}">Copiar datos de ${esc(evoName(p,last))}<small>Trae la nota, el examen físico, los signos vitales y las prescripciones para que solo cambies lo nuevo.</small></button><button data-a="evo-photo" data-pid="${p.id}">📷 Leer desde una foto<small>Toma foto a la hoja de evolución y se llenan los campos que se puedan leer.</small></button><button data-a="draft-open" data-mode="evo" data-pid="${p.id}">📋 Desde un borrador<small>Pega el texto de la hoja y se reparte en los campos.</small></button><button data-a="evo-blank" data-pid="${p.id}">Nueva evolución en blanco</button></div>`)},
   'evo-blank':d=>evoForm(getP(d.pid)),
   'evo-photo':d=>{const i=$('#evoScanFile');if(!i)return;i.dataset.pid=d.pid;i.dataset.eid='';if(!$('#sheetWrap').hidden)closeSheet();choosePhoto('evoScanFile')},
   'evo-update':d=>{const i=$('#evoScanFile');if(!i)return;i.dataset.pid=d.pid;i.dataset.eid=d.id;choosePhoto('evoScanFile')},
   'pick-cam':()=>{const i=pickTarget&&document.getElementById(pickTarget);const pk=$('#picker');if(pk)pk.remove();if(i){i.setAttribute('capture','environment');i.click()}},
   'pick-gal':()=>{const i=pickTarget&&document.getElementById(pickTarget);const pk=$('#picker');if(pk)pk.remove();if(i){i.removeAttribute('capture');i.click()}},
   'pick-close':()=>{const pk=$('#picker');if(pk)pk.remove()},
+  'draft-open':d=>openSheet(`${sheetHead('📋 Borrador')}${draftUI(d.mode,d.pid||'',d.eid||'')}`),
+  'pt-draft':()=>{const b=$('#ptDraft');if(!b)return;b.innerHTML=b.innerHTML?'':draftUI('patient');const t=$('#draftText');if(t)t.focus()},
+  'draft-file':()=>{const i=$('#draftFile');if(i)i.click()},
+  'draft-go':d=>{const t=$('#draftText');processDraft(d.mode,t?t.value:'',d.pid,d.eid)},
   'rx-to-meds':d=>{const p=getP(d.pid);const e=p&&(p.evolutions||[]).find(x=>x.id===d.id);if(e)rxPreview(p,e)},
   'pt-scan':()=>choosePhoto('ptScanFile'),
   'lab-tpl':d=>labTplForm(getP(d.pid),d.k||'bh'),
@@ -1555,8 +1718,8 @@ const SUB={
     const fields={code:d.code.trim(),name:(d.name||'').trim(),bed:d.bed.trim(),service:d.service.trim(),admitDate:d.admitDate,status:d.cond==='alta'?'alta':d.status,cond:d.cond||'',dxList,dx:dxList.map(x=>x.text+(x.cie?` (${x.cie})`:'')).join('; '),history:d.history,allergies:d.allergies,info:d.info};
     let p=f.dataset.id&&getP(f.dataset.id);
     if(p)Object.assign(p,fields);else{p={id:uid(),...fields,evolutions:[],labs:[],meds:[],procs:[],obs:'',created:Date.now()};S.patients.push(p)}
-    let evoMsg='';if(f.elements.addEvo&&f.elements.addEvo.checked&&ptScan&&ptScan.evo){p.evolutions=p.evolutions||[];const ne=evoFromScan(ptScan.evo);p.evolutions.push(ne);S.settings.openSections.evo=true;ui.evoIdx[p.id]=null;evoMsg=' con su evolución'}ptScan=null;
-    ui.tab='pacientes';ui.patientId=p.id;save();closeSheet();render();toast('Paciente guardado'+evoMsg);
+    let evoMsg='';if(f.elements.addEvo&&f.elements.addEvo.checked&&ptScan&&ptScan.evo){p.evolutions=p.evolutions||[];const ne=evoFromScan(ptScan.evo);applyExtras(ne,ptScan.evo);p.evolutions.push(ne);S.settings.openSections.evo=true;ui.evoIdx[p.id]=null;evoMsg=' con su evolución'}ptScan=null;
+    ui.tab='pacientes';ui.patientId=p.id;save();closeSheet();render();toast('Paciente guardado'+evoMsg);if(draftLabs&&!draftLabs.pid){const dl=draftLabs;draftLabs=null;setTimeout(()=>labReview(p,dl.data),80)}
   },
   evo:(d,f)=>{
     const p=getP(f.dataset.pid);const vit={};VITALS.forEach(([k])=>{if(has(d['v_'+k]))vit[k]=d['v_'+k].trim()});
@@ -1567,7 +1730,9 @@ const SUB={
     const nid=e?e.id:uid();
     if(e)Object.assign(e,o);else p.evolutions.push({id:nid,...o});
     ui.evoIdx[p.id]=[...p.evolutions].sort(byEvo).findIndex(x=>x.id===nid);
+    if(draftDx&&draftDx.pid===p.id&&f.elements.addDx&&f.elements.addDx.checked){p.dxList=p.dxList&&p.dxList.length?p.dxList:(p.dx?[{cie:'',text:p.dx}]:[]);draftDx.list.forEach(x=>p.dxList.push({cie:String(x.cie10||'').toUpperCase(),text:x.texto||''}));p.dx=p.dxList.map(x=>x.text+(x.cie?` (${x.cie})`:'')).join('; ')}draftDx=null;
     S.settings.openSections.evo=true;save();closeSheet();render();toast('Evolución guardada');
+    if(draftLabs&&draftLabs.pid===p.id){const dl=draftLabs;draftLabs=null;setTimeout(()=>labReview(p,dl.data),80)}
   },
   lab:(d,f,more)=>{
     const p=getP(f.dataset.pid);p.labs=p.labs||[];
@@ -1675,6 +1840,7 @@ document.addEventListener('change',e=>{
   if(t.dataset.widget){const h=S.settings.hidden;S.settings.hidden=t.checked?h.filter(x=>x!==t.dataset.widget):uniq([...h,t.dataset.widget]);save();render();return}
   if(t.dataset.setting){S.settings[t.dataset.setting]=Number(t.value);S.settings.guardNotified='';save();return}
   if(t.id==='edCat'){const n=getNote(ui.noteId);n.cat=t.value;save();return}
+  if(t.id==='draftFile'&&t.files[0]){const r=new FileReader();r.onload=()=>{const ta=$('#draftText');if(ta){ta.value=(ta.value?ta.value+'\n':'')+String(r.result||'');toast('Texto cargado')}};r.readAsText(t.files[0]);t.value='';return}
   if(t.id==='evoScanFile'&&t.files[0]){const file=t.files[0];const pid=t.dataset.pid;const eid=t.dataset.eid;t.value='';(async()=>{const r=await aiJSON(file,EVO_PROMPT);if(r.err)return aiErr(r.err,'evo');const p=getP(pid);if(!p||!r.data||typeof r.data!=='object')return toast('No se pudo leer la nota.','err');
     const cur=eid&&(p.evolutions||[]).find(x=>x.id===eid);
     if(cur){const{e,marks}=mergeScan(cur,r.data);if(!marks.length)return toast('La foto no trae nada distinto a esta evolución.');evoForm(p,e);const fm=$('#sheet form');if(fm)fm.insertAdjacentHTML('beforebegin',`<p class="copied">Se actualizaron ${marks.length} ${marks.length===1?'campo':'campos'} con la foto (marcados con una línea de color). Lo demás se mantiene. Revisa antes de guardar; si cancelas, la evolución queda como estaba.</p>`);marks.forEach(n=>{const el=$('#sheet').querySelector(`[name="${n}"]`);if(el){el.classList.add('filled');const dt=el.closest('details');if(dt)dt.open=true}});return}
